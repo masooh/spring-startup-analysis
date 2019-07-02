@@ -1,7 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script src="/js/Chart.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/js/Chart.min.css"/>
 </head>
 <body>
 
@@ -35,7 +36,7 @@
 
                 var canvas = document.getElementById('chart-area');
                 // And for a doughnut chart
-                var myDoughnutChart = new Chart(canvas, {
+                new Chart(canvas, {
                     type: 'doughnut',
                     data: serverData,
                     options: {
