@@ -19,6 +19,7 @@ import java.util.Map;
 public class StartProgressBeanPostProcessor implements BeanPostProcessor {
 
     private List<StartTimeStatisticDto> times = new LinkedList<>();
+
     private Map<String, StopWatch> beanStopWatchMap = new HashMap<>();
 
     // Hopefully the logic to this makes sense. Some beans such as
@@ -55,14 +56,16 @@ public class StartProgressBeanPostProcessor implements BeanPostProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 
         StopWatch stopWatch = beanStopWatchMap.get(beanName);
-        if (stopWatch != null && stopWatch.isStarted()) {
+        if ((stopWatch != null) && stopWatch.isStarted()) {
 
             stopWatch.stop();
 
             if (!inFactoryBean) {
                 long deltaT = stopWatch.getTime();
-                StartTimeStatisticDto bss = new StartTimeStatisticDto(bean.getClass().toString(), deltaT);
-                times.add(bss);
+                if (deltaT > 0) {
+                    StartTimeStatisticDto bss = new StartTimeStatisticDto(bean.getClass().getName(), deltaT);
+                    times.add(bss);
+                }
             }
         }
 
@@ -82,7 +85,7 @@ public class StartProgressBeanPostProcessor implements BeanPostProcessor {
     /**
      * Gets the total time to start all the beans
      */
-    public long getTotalTime(){
+    public long getTotalTime() {
         return times.stream().mapToLong(t -> t.getTime()).sum();
     }
 }

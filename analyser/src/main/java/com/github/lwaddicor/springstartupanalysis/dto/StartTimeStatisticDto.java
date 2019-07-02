@@ -3,7 +3,7 @@ package com.github.lwaddicor.springstartupanalysis.dto;
 /**
  * Dto which represents the start time statistic for a bean
  */
-public class StartTimeStatisticDto {
+public class StartTimeStatisticDto implements Comparable<StartTimeStatisticDto> {
 
     private String name;
     private Long time;
@@ -31,5 +31,11 @@ public class StartTimeStatisticDto {
      */
     public String getName() {
         return name;
+    }
+
+    @Override
+    public int compareTo(StartTimeStatisticDto other) {
+        int timeComparison = this.time.compareTo(other.time) * -1;
+        return timeComparison != 0 ? timeComparison : this.name.compareTo(other.name);
     }
 }

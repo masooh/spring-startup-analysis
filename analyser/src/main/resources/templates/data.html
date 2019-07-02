@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+</head>
+<body>
+
+<div id="canvas-holder" style="width:80%">
+    <canvas id="chart-area"></canvas>
+</div>
+
+<script>
+
+    var getJSON = function (url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function () {
+            var status = xhr.status;
+            if (status === 200) {
+                callback(null, xhr.response);
+            } else {
+                callback(status, xhr.response);
+            }
+        };
+        xhr.send();
+    };
+
+    getJSON('/spring-startup/data.json',
+        function (err, serverData) {
+            if (err !== null) {
+                console.error(err);
+            } else {
+                console.log(serverData);
+
+                var canvas = document.getElementById('chart-area');
+                // And for a doughnut chart
+                var myDoughnutChart = new Chart(canvas, {
+                    type: 'doughnut',
+                    data: serverData,
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Components by time',
+                            fontSize: 25
+                        }
+                    }
+                });
+            }
+        });
+</script>
+</body>
+</html>
