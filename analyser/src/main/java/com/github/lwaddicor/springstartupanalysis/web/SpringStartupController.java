@@ -31,9 +31,9 @@ public class SpringStartupController {
     private StartProgressBeanPostProcessor processor;
 
     private void doConstruct() {
-        Collections.sort(processor.getTimesAsArray());
-        List<StartTimeStatisticDto> times = processor.getTimesAsArray()
-                .subList(0, (processor.getTimesAsArray().size() > 20) ? 20 : (processor.getTimesAsArray().size() - 1));
+        processor.printTopTimes(20);
+
+        List<StartTimeStatisticDto> times = processor.getTopTimes(20);
 
         // shorten EnhancerBySpringCGLIB$$9e6123a7
         data.setLabels(times.stream().map(startTimeStatisticDto -> startTimeStatisticDto.getName().replaceFirst("\\$\\$.*$", "")).collect(Collectors.toList()));

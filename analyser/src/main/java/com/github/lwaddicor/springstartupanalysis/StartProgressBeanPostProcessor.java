@@ -7,6 +7,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,9 +34,9 @@ public class StartProgressBeanPostProcessor implements BeanPostProcessor {
      * @param bean The bean being created.
      * @param beanName The name of the bean being created.
      * @return The bean being created.
-     * @throws BeansException
      */
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) {
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -51,9 +52,9 @@ public class StartProgressBeanPostProcessor implements BeanPostProcessor {
      * @param bean The bean being created.
      * @param beanName The name of the bean being created.
      * @return The bean being created.
-     * @throws BeansException
      */
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
 
         StopWatch stopWatch = beanStopWatchMap.get(beanName);
         if ((stopWatch != null) && stopWatch.isStarted()) {
@@ -82,10 +83,21 @@ public class StartProgressBeanPostProcessor implements BeanPostProcessor {
         return times;
     }
 
+    public List<StartTimeStatisticDto> getTopTimes(int max) {
+        Collections.sort(times);
+        return times.subList(0, (times.size() > max) ? max : (times.size() - 1));
+    }
+
+    public void printTopTimes(int max) {
+        getTopTimes(max).forEach(
+                it -> System.out.printf("%10d: %s%n", it.getTime(), it.getName())
+        );
+    }
+
     /**
      * Gets the total time to start all the beans
      */
     public long getTotalTime() {
-        return times.stream().mapToLong(t -> t.getTime()).sum();
+        return times.stream().mapToLong(StartTimeStatisticDto::getTime).sum();
     }
 }
